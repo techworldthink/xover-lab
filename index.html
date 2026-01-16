@@ -20,32 +20,118 @@
             <p>Precision 2-Way Speaker Crossover Designer</p>
         </header>
 
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="simple">Textbook</button>
+            <button class="tab-btn" data-tab="advanced">Real-World Passive</button>
+            <button class="tab-btn" data-tab="complex">Multi-Way</button>
+        </div>
+
         <div class="main-grid">
             <section class="input-section">
-                <div class="form-group">
-                    <label for="tweeter-imp">Tweeter Impedance (Ω)</label>
-                    <input type="number" id="tweeter-imp" value="8" step="0.1" min="1">
-                </div>
-                <div class="form-group">
-                    <label for="woofer-imp">Woofer Impedance (Ω)</label>
-                    <input type="number" id="woofer-imp" value="8" step="0.1" min="1">
-                </div>
-                <div class="form-group">
-                    <label for="freq">Crossover Frequency (Hz)</label>
-                    <input type="number" id="freq" value="3000" step="10" min="20">
-                    <span class="input-hint">The "hand-off" point between woofer and tweeter. Common range: 2000 - 3500
-                        Hz.</span>
-                </div>
-                <div class="form-group">
-                    <label for="type">Crossover Type</label>
-                    <select id="type">
-                        <option value="1st Order Butterworth">1st Order Butterworth (6dB)</option>
-                        <option value="2nd Order Butterworth">2nd Order Butterworth (12dB)</option>
-                        <option value="2nd Order Linkwitz-Riley">2nd Order Linkwitz-Riley (12dB)</option>
-                        <option value="2nd Order Bessel">2nd Order Bessel (12dB)</option>
+                <!-- Design Intent Selector -->
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <label for="intent">Design Intent</label>
+                    <select id="intent">
+                        <option value="Flat / Reference">Flat / Reference</option>
+                        <option value="Warm">Warm (Relaxed Highs)</option>
+                        <option value="Bright">Bright (Detailed Highs)</option>
+                        <option value="Vocal Forward">Vocal Forward</option>
                     </select>
+                    <span class="input-hint">Adjusts the overall sound character (e.g., 'Warm' provides a more relaxed
+                        high-end).</span>
                 </div>
+
+                <!-- Simple 2-Way Inputs -->
+                <div id="simple-inputs" class="tab-content">
+                    <h2>Textbook 2-Way</h2>
+                    <div class="form-group">
+                        <label for="tweeter-imp">Tweeter Impedance (Ω)</label>
+                        <input type="number" id="tweeter-imp" value="8" step="0.1" min="1">
+                        <span class="input-hint">Nominal resistance of the tweeter (check driver specs, usually 4 or
+                            8Ω).</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="tweeter-fs">Tweeter Fs (Hz) - <span
+                                style="font-size: 0.7rem; color: var(--text-muted);">Optional for safety</span></label>
+                        <input type="number" id="tweeter-fs" placeholder="e.g. 1000" step="1">
+                        <span class="input-hint">Found in the tweeter's datasheet as 'Fs'. Used to calculate safety
+                            margins.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="woofer-imp">Woofer Impedance (Ω)</label>
+                        <input type="number" id="woofer-imp" value="8" step="0.1" min="1">
+                        <span class="input-hint">Nominal resistance of the woofer (usually 4 or 8Ω).</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="freq">Crossover Frequency (Hz)</label>
+                        <input type="number" id="freq" value="3000" step="10" min="20">
+                        <span class="input-hint">The "hand-off" point between woofer and tweeter. Common range: 2000 -
+                            3500 Hz.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Crossover Type</label>
+                        <select id="type">
+                            <option value="1st Order Butterworth">1st Order Butterworth (6dB)</option>
+                            <option value="2nd Order Butterworth">2nd Order Butterworth (12dB)</option>
+                            <option value="2nd Order Linkwitz-Riley">2nd Order Linkwitz-Riley (12dB)</option>
+                            <option value="2nd Order Bessel">2nd Order Bessel (12dB)</option>
+                        </select>
+                        <span class="input-hint">Determines how sharply frequencies are cut off (slope) and the filter's
+                            phase characteristics.</span>
+                    </div>
+                </div>
+
+                <!-- Advanced Inputs (L-Pad / Zobel) -->
+                <div id="advanced-inputs" class="tab-content hidden">
+                    <h2>Real-World Correction</h2>
+                    <div class="form-group">
+                        <label>L-Pad (Tweeter Atten.)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <input type="number" id="lpad-imp" placeholder="Imp (8)" step="0.1">
+                            <input type="number" id="lpad-db" placeholder="dB (3)" step="0.1">
+                        </div>
+                        <span class="input-hint">Matches tweeter volume to woofer. Enter tweeter impedance and desired
+                            dB reduction.</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Zobel (Woofer Comp.)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <input type="number" id="zobel-re" placeholder="Re (ohms)" step="0.1">
+                            <input type="number" id="zobel-le" placeholder="Le (mH)" step="0.01">
+                        </div>
+                        <span class="input-hint">Find <b>Re</b> and <b>Le</b> in the woofer's datasheet (T/S
+                            parameters), or measure <b>Re</b> with a multimeter.</span>
+                    </div>
+                </div>
+
+                <!-- Complex Inputs (3-Way) -->
+                <div id="complex-inputs" class="tab-content hidden">
+                    <h2>3-Way Designer</h2>
+                    <div class="form-group">
+                        <label>Impedances (Ω)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
+                            <input type="number" id="w3-rt" placeholder="TW" step="0.1">
+                            <input type="number" id="w3-rm" placeholder="MID" step="0.1">
+                            <input type="number" id="w3-rw" placeholder="WF" step="0.1">
+                        </div>
+                        <span class="input-hint">Nominal impedance for Tweeter (TW), Midrange (MID), and Woofer
+                            (WF).</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Freqs (Hz)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <input type="number" id="w3-flz" placeholder="Low (500)">
+                            <input type="number" id="w3-fhz" placeholder="High (3500)">
+                        </div>
+                        <span class="input-hint">Low: Woofer to Midrange crossover. High: Midrange to Tweeter
+                            crossover.</span>
+                    </div>
+                </div>
+
                 <button id="calc-btn">Calculate Components</button>
+
+                <div id="alerts-container" class="alerts-container"></div>
+                <div id="intent-tip" class="intent-tip hidden"></div>
             </section>
 
             <section class="results-section">
@@ -91,16 +177,41 @@
     </div>
 
     <script type="module">
-        import { calculateCrossover, CROSSOVER_TYPES } from './calculator.js';
+        import { calculateCrossover, calculateLPad, calculateZobel, calculate3Way, validateSafety, getIntentGuidance, CROSSOVER_TYPES, DESIGN_INTENTS } from './calculator.js';
 
         const btn = document.getElementById('calc-btn');
         const rhInput = document.getElementById('tweeter-imp');
+        const fsInput = document.getElementById('tweeter-fs');
         const rlInput = document.getElementById('woofer-imp');
         const fInput = document.getElementById('freq');
         const typeSelect = document.getElementById('type');
+        const intentSelect = document.getElementById('intent');
         const hpList = document.getElementById('high-pass-list');
         const lpList = document.getElementById('low-pass-list');
         const svg = document.getElementById('schematic-svg');
+        const alertsContainer = document.getElementById('alerts-container');
+        const intentTip = document.getElementById('intent-tip');
+
+        // Tab Logic
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        let activeTab = 'simple';
+
+        tabBtns.forEach(tabBtn => {
+            tabBtn.addEventListener('click', () => {
+                console.log('Tab clicked:', tabBtn.dataset.tab);
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabBtn.classList.add('active');
+
+                activeTab = tabBtn.dataset.tab;
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                    if (content.id === `${activeTab}-inputs`) content.classList.remove('hidden');
+                });
+
+                updateResults();
+            });
+        });
 
         function drawSchematic(type) {
             svg.innerHTML = '';
@@ -153,7 +264,7 @@
                     <line x1="360" y1="150" x2="360" y2="250" stroke="#d1d5db" stroke-width="2" />
                 `;
             } else {
-                // 2nd Order (Simplified representation for both HP/LP)
+                // 2nd Order
                 svg.innerHTML += `
                     <!-- High Pass Path -->
                     <line x1="50" y1="50" x2="150" y2="50" stroke="#d1d5db" stroke-width="2" />
@@ -194,35 +305,91 @@
         }
 
         function updateResults() {
-            const rh = parseFloat(rhInput.value);
-            const rl = parseFloat(rlInput.value);
-            const f = parseFloat(fInput.value);
-            const type = typeSelect.value;
+            alertsContainer.innerHTML = '';
+            const intent = intentSelect.value;
+            intentTip.textContent = getIntentGuidance(intent);
+            intentTip.classList.remove('hidden');
 
-            const results = calculateCrossover(rh, rl, f, type);
+            if (activeTab === 'simple') {
+                const rh = parseFloat(rhInput.value);
+                const rl = parseFloat(rlInput.value);
+                const f = parseFloat(fInput.value);
+                const fs = parseFloat(fsInput.value);
+                const type = typeSelect.value;
 
-            hpList.innerHTML = results.highPass.map(comp => `
+                const results = calculateCrossover(rh, rl, f, type);
+                renderResults(results.highPass, results.lowPass);
+                drawSchematic(type);
+
+                // Run Safety Validation
+                const warnings = validateSafety(rh, rl, f, fs, type);
+                warnings.forEach(w => {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = `alert ${w.type}`;
+                    alertDiv.textContent = w.message;
+                    alertsContainer.appendChild(alertDiv);
+                });
+            }
+            else if (activeTab === 'advanced') {
+                const resultHP = [];
+                const resultLP = [];
+
+                // L-Pad
+                const lpadImp = parseFloat(document.getElementById('lpad-imp').value);
+                const lpadDb = parseFloat(document.getElementById('lpad-db').value);
+                if (lpadImp && lpadDb) {
+                    const lpad = calculateLPad(lpadImp, lpadDb);
+                    resultHP.push({ name: 'R1 (Series)', value: lpad.r1, unit: 'Ω' });
+                    resultHP.push({ name: 'R2 (Para)', value: lpad.r2, unit: 'Ω' });
+                }
+
+                // Zobel
+                const zobelRe = parseFloat(document.getElementById('zobel-re').value);
+                const zobelLe = parseFloat(document.getElementById('zobel-le').value);
+                if (zobelRe && zobelLe) {
+                    const zobel = calculateZobel(zobelRe, zobelLe);
+                    resultLP.push({ name: 'Rz (Zobel)', value: zobel.rz, unit: 'Ω' });
+                    resultLP.push({ name: 'Cz (Zobel)', value: zobel.cz, unit: 'uF' });
+                }
+                renderResults(resultHP, resultLP);
+            }
+            else if (activeTab === 'complex') {
+                const rt = parseFloat(document.getElementById('w3-rt').value) || 8;
+                const rm = parseFloat(document.getElementById('w3-rm').value) || 8;
+                const rw = parseFloat(document.getElementById('w3-rw').value) || 8;
+                const flz = parseFloat(document.getElementById('w3-flz').value) || 500;
+                const fhz = parseFloat(document.getElementById('w3-fhz').value) || 3500;
+
+                const results = calculate3Way(rw, rm, rt, flz, fhz);
+
+                hpList.innerHTML = `<h3>Tweeter</h3>` + results.tweeter.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('');
+                lpList.innerHTML = `<h3>Woofer</h3>` + results.woofer.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('') +
+                    `<h3>Midrange</h3>` + results.midrange.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('');
+            }
+        }
+
+        function renderResults(hp, lp) {
+            hpList.innerHTML = hp.map(comp => `
                 <div class="component-item">
                     <span class="comp-name">${comp.name}</span>
                     <span class="comp-value">${comp.value} <span class="unit">${comp.unit}</span></span>
                 </div>
             `).join('');
 
-            lpList.innerHTML = results.lowPass.map(comp => `
+            lpList.innerHTML = lp.map(comp => `
                 <div class="component-item">
                     <span class="comp-name">${comp.name}</span>
                     <span class="comp-value">${comp.value} <span class="unit">${comp.unit}</span></span>
                 </div>
             `).join('');
-
-            drawSchematic(type);
         }
 
         btn.addEventListener('click', updateResults);
-
-        // Initial calculation
         updateResults();
     </script>
+</body>
+
+</html>
 </body>
 
 </html>
