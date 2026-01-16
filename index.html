@@ -21,202 +21,297 @@
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" data-tab="simple">Textbook</button>
+            <button class="tab-btn active" data-tab="home">Home</button>
+            <button class="tab-btn" data-tab="simple">Textbook</button>
             <button class="tab-btn" data-tab="advanced">Real-World Passive</button>
             <button class="tab-btn" data-tab="complex">Multi-Way</button>
         </div>
 
-        <div class="main-grid">
-            <section class="input-section">
-                <!-- Design Intent Selector -->
-                <div class="form-group" style="margin-bottom: 2rem;">
-                    <label for="intent">Design Intent</label>
-                    <select id="intent">
-                        <option value="Flat / Reference">Flat / Reference</option>
-                        <option value="Warm">Warm (Relaxed Highs)</option>
-                        <option value="Bright">Bright (Detailed Highs)</option>
-                        <option value="Vocal Forward">Vocal Forward</option>
-                    </select>
-                    <span class="input-hint">Adjusts the overall sound character (e.g., 'Warm' provides a more relaxed
-                        high-end).</span>
+        <!-- Home View -->
+        <div id="home-view" class="tab-view">
+            <div class="spectrum-card">
+                <h2>Audio Frequency Spectrum</h2>
+                <p>Understanding which sound lives in each frequency range is essential for designing great speakers.
+                </p>
+
+                <div class="frequency-chart">
+                    <div class="chart-band sub-bass" data-name="Sub-Bass" data-range="20-60 Hz"
+                        data-desc="The 'vibration' you feel. Kick drums and deep bass notes."></div>
+                    <div class="chart-band bass" data-name="Bass" data-range="60-250 Hz"
+                        data-desc="The power and 'thump' of the music. Pianos and lower guitars."></div>
+                    <div class="chart-band low-mid" data-name="Low Midrange" data-range="250-500 Hz"
+                        data-desc="Added warmth and fullness. Lower vocal registers."></div>
+                    <div class="chart-band midrange" data-name="Midrange" data-range="500-2000 Hz"
+                        data-desc="The heart of the sound. Vocals and most instruments."></div>
+                    <div class="chart-band presence" data-name="Presence" data-range="2000-4000 Hz"
+                        data-desc="Clarity and definition. The 'edge' of a voice or snare."></div>
+                    <div class="chart-band brilliance" data-name="Brilliance" data-range="4000-6000 Hz"
+                        data-desc="Detail and harmonics. The 'zing' of strings."></div>
+                    <div class="chart-band treble" data-name="Treble / Air" data-range="6000-20000 Hz"
+                        data-desc="The sparkle and atmosphere. Cymbals and air."></div>
                 </div>
 
-                <!-- Simple 2-Way Inputs -->
-                <div id="simple-inputs" class="tab-content">
-                    <h2>Textbook 2-Way</h2>
-                    <div class="form-group">
-                        <label for="tweeter-imp">Tweeter Impedance (Ω)</label>
-                        <input type="number" id="tweeter-imp" value="8" step="0.1" min="1">
-                        <span class="input-hint">Nominal resistance (usually 4 or 8Ω). Typical: 8Ω for home
-                            speakers.</span>
-                    </div>
-                    <div class="form-group">
-                        <label for="tweeter-fs">Tweeter Fs (Hz) - <span
-                                style="font-size: 0.7rem; color: var(--text-muted);">Optional for safety</span></label>
-                        <input type="number" id="tweeter-fs" placeholder="e.g. 1000" step="1">
-                        <span class="input-hint">Found in datasheet as 'Fs'. Typical: 1000Hz. Used for safety
-                            margins.</span>
-                    </div>
-                    <div class="form-group">
-                        <label for="woofer-imp">Woofer Impedance (Ω)</label>
-                        <input type="number" id="woofer-imp" value="8" step="0.1" min="1">
-                        <span class="input-hint">Nominal resistance (usually 4 or 8Ω). Typical: 8Ω for home
-                            speakers.</span>
-                    </div>
-                    <div class="form-group">
-                        <label for="freq">Crossover Frequency (Hz)</label>
-                        <input type="number" id="freq" value="3000" step="10" min="20">
-                        <span class="input-hint">The "hand-off" point between woofer and tweeter. Common range: 2000 -
-                            3500 Hz.</span>
-                    </div>
-                    <div class="form-group">
-                        <label for="type">Crossover Type</label>
-                        <select id="type">
-                            <option value="1st Order Butterworth">1st Order Butterworth (6dB)</option>
-                            <option value="2nd Order Butterworth">2nd Order Butterworth (12dB)</option>
-                            <option value="2nd Order Linkwitz-Riley">2nd Order Linkwitz-Riley (12dB)</option>
-                            <option value="2nd Order Bessel">2nd Order Bessel (12dB)</option>
-                        </select>
-                        <span class="input-hint">Determines how sharply frequencies are cut off (slope) and the filter's
-                            phase characteristics.</span>
-                    </div>
+                <div id="spectrum-info" class="spectrum-info">
+                    <h3 id="info-name">Point to a range above</h3>
+                    <p id="info-range">20 Hz - 20 kHz</p>
+                    <p id="info-desc">Explore how sound is divided across the spectrum. Hover over the colorful bars to
+                        learn more.</p>
                 </div>
+            </div>
 
-                <!-- Advanced Inputs (L-Pad / Zobel) -->
-                <div id="advanced-inputs" class="tab-content hidden">
-                    <h2>Real-World Correction</h2>
-                    <div class="form-group">
-                        <label>L-Pad (Tweeter Atten.)</label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <input type="number" id="lpad-imp" placeholder="Imp (8)" step="0.1">
-                            <input type="number" id="lpad-db" placeholder="dB (3)" step="0.1">
-                        </div>
-                        <span class="input-hint">Matches tweeter volume to woofer. Typical reduction: 3 to 6 dB.</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Zobel (Woofer Comp.)</label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <input type="number" id="zobel-re" placeholder="Re (ohms)" step="0.1">
-                            <input type="number" id="zobel-le" placeholder="Le (mH)" step="0.01">
-                        </div>
-                        <span class="input-hint">Corrects rising impedance. Typical for 8Ω woofer: Re 6.5, Le
-                            0.8.</span>
-                    </div>
+            <div class="home-guide">
+                <div class="guide-card">
+                    <h4>Crossover Alignment?</h4>
+                    <p><b>Butterworth:</b> Mathematically flat response. The most common choice.</p>
+                    <p><b>Linkwitz-Riley:</b> Perfect for phase alignment. Tweeter and woofer work in sync.</p>
                 </div>
-
-                <!-- Complex Inputs (3-Way) -->
-                <div id="complex-inputs" class="tab-content hidden">
-                    <h2>3-Way Designer</h2>
-                    <div class="form-group">
-                        <label>Impedances (Ω)</label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
-                            <input type="number" id="w3-rt" placeholder="TW" step="0.1">
-                            <input type="number" id="w3-rm" placeholder="MID" step="0.1">
-                            <input type="number" id="w3-rw" placeholder="WF" step="0.1">
-                        </div>
-                        <span class="input-hint">Speaker impedances (usually 8Ω).</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Freqs (Hz)</label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <input type="number" id="w3-flz" placeholder="Low (500)">
-                            <input type="number" id="w3-fhz" placeholder="High (3500)">
-                        </div>
-                        <span class="input-hint">Typical Hand-offs: 500Hz (Low) and 3500Hz (High).</span>
-                    </div>
+                <div class="guide-card">
+                    <h4>Orders & Slopes</h4>
+                    <p><b>1st Order (6dB):</b> Gentle. Best for audiophile setups.</p>
+                    <p><b>4th Order (24dB):</b> Sharp. Maximum protection for your drivers.</p>
                 </div>
-
-                <button id="calc-btn">Calculate Components</button>
-
-                <div id="alerts-container" class="alerts-container"></div>
-                <div id="intent-tip" class="intent-tip hidden"></div>
-            </section>
-
-            <section class="results-section">
-                <div class="result-card" id="high-pass-card">
-                    <h3>High Pass Network (Tweeter)</h3>
-                    <div class="component-list" id="high-pass-list">
-                        <!-- Calculated items will go here -->
-                        <div class="component-item">
-                            <span class="comp-name">C1</span>
-                            <span class="comp-value">-- <span class="unit">uF</span></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="result-card" id="low-pass-card">
-                    <h3>Low Pass Network (Woofer)</h3>
-                    <div class="component-list" id="low-pass-list">
-                        <!-- Calculated items will go here -->
-                        <div class="component-item">
-                            <span class="comp-name">L1</span>
-                            <span class="comp-value">-- <span class="unit">mH</span></span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- Simplified schematic area -->
-        <!-- Schematic Area -->
-        <div class="schematic-container">
-            <h3>Network Schematic</h3>
-            <div id="schematic-svg-wrapper">
-                <svg id="schematic-svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet">
-                    <!-- Dynamic content -->
-                </svg>
             </div>
         </div>
 
-        <div id="schematic-info"
-            style="margin-top: 2rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
-            Calculations are based on ideal driver impedances.
+        <div id="calculator-view" class="tab-view hidden">
+            <div class="main-grid">
+                <section class="input-section">
+                    <!-- Design Intent Selector -->
+                    <div class="form-group">
+                        <label for="intent">Design Intent</label>
+                        <select id="intent">
+                            <option value="Flat / Reference">Flat / Reference</option>
+                            <option value="Warm">Warm (Relaxed Highs)</option>
+                            <option value="Bright">Bright (Detailed Highs)</option>
+                            <option value="Vocal Forward">Vocal Forward</option>
+                        </select>
+                        <span class="input-hint">Adjusts the overall sound character.</span>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label for="type">Crossover Type (Alignment)</label>
+                        <select id="type">
+                            <option value="1st Order Butterworth">1st Order Butterworth (6dB)</option>
+                            <option value="2nd Order Butterworth" selected>2nd Order Butterworth (12dB)</option>
+                            <option value="2nd Order Linkwitz-Riley">2nd Order Linkwitz-Riley (12dB)</option>
+                            <option value="2nd Order Bessel">2nd Order Bessel (12dB)</option>
+                            <option value="3rd Order Butterworth">3rd Order Butterworth (18dB)</option>
+                            <option value="4th Order Linkwitz-Riley">4th Order Linkwitz-Riley (24dB)</option>
+                        </select>
+                        <span class="input-hint">Affects how sharply frequencies roll off and how drivers align in
+                            phase.</span>
+                    </div>
+
+                    <!-- Simple 2-Way Inputs -->
+                    <div id="simple-inputs" class="tab-content">
+                        <h2>Textbook 2-Way</h2>
+                        <div class="form-group">
+                            <label for="tweeter-imp">Tweeter Impedance (Ω)</label>
+                            <input type="number" id="tweeter-imp" value="8" step="0.1" min="1">
+                            <span class="input-hint">Nominal resistance (usually 4 or 8Ω). Typical: 8Ω for home
+                                speakers.</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="tweeter-fs">Tweeter Fs (Hz) - <span
+                                    style="font-size: 0.7rem; color: var(--text-muted);">Optional for
+                                    safety</span></label>
+                            <input type="number" id="tweeter-fs" placeholder="e.g. 1000" step="1">
+                            <span class="input-hint">Found in datasheet as 'Fs'. Typical: 1000Hz. Used for safety
+                                margins.</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="woofer-imp">Woofer Impedance (Ω)</label>
+                            <input type="number" id="woofer-imp" value="8" step="0.1" min="1">
+                            <span class="input-hint">Nominal resistance (usually 4 or 8Ω). Typical: 8Ω for home
+                                speakers.</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="freq">Crossover Frequency (Hz)</label>
+                            <input type="number" id="freq" value="3000" step="10" min="20">
+                            <span class="input-hint">The "hand-off" point between woofer and tweeter. Common range: 2000
+                                -
+                                3500 Hz.</span>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Inputs (L-Pad / Zobel) -->
+                    <div id="advanced-inputs" class="tab-content hidden">
+                        <h2>Real-World Correction</h2>
+                        <div class="form-group">
+                            <label>L-Pad (Tweeter Atten.)</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <input type="number" id="lpad-imp" placeholder="Imp (8)" step="0.1">
+                                <input type="number" id="lpad-db" placeholder="dB (3)" step="0.1">
+                            </div>
+                            <span class="input-hint">Matches tweeter volume to woofer. Typical reduction: 3 to 6
+                                dB.</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Zobel (Woofer Comp.)</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <input type="number" id="zobel-re" placeholder="Re (ohms)" step="0.1">
+                                <input type="number" id="zobel-le" placeholder="Le (mH)" step="0.01">
+                            </div>
+                            <span class="input-hint">Corrects rising impedance. Typical for 8Ω woofer: Re 6.5, Le
+                                0.8.</span>
+                        </div>
+                    </div>
+
+                    <!-- Complex Inputs (3-Way) -->
+                    <div id="complex-inputs" class="tab-content hidden">
+                        <h2>3-Way Designer</h2>
+                        <div class="form-group">
+                            <label>Impedances (Ω)</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
+                                <input type="number" id="w3-rt" placeholder="TW" step="0.1">
+                                <input type="number" id="w3-rm" placeholder="MID" step="0.1">
+                                <input type="number" id="w3-rw" placeholder="WF" step="0.1">
+                            </div>
+                            <span class="input-hint">Speaker impedances (usually 8Ω).</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Freqs (Hz)</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <input type="number" id="w3-flz" placeholder="Low (500)">
+                                <input type="number" id="w3-fhz" placeholder="High (3500)">
+                            </div>
+                            <span class="input-hint">Typical Hand-offs: 500Hz (Low) and 3500Hz (High).</span>
+                        </div>
+                    </div>
+
+                    <button id="calc-btn">Calculate Components</button>
+
+                    <div id="alerts-container" class="alerts-container"></div>
+                    <div id="intent-tip" class="intent-tip hidden"></div>
+                </section>
+
+                <section class="results-section">
+                    <div class="result-card" id="tweeter-card">
+                        <h3>Tweeter Network</h3>
+                        <div class="component-list" id="tweeter-list">
+                            <div class="component-item">
+                                <span class="comp-name">C1</span>
+                                <span class="comp-value">-- <span class="unit">uF</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card hidden" id="midrange-card">
+                        <h3>Midrange Network</h3>
+                        <div class="component-list" id="midrange-list">
+                            <div class="component-item">
+                                <span class="comp-name">C2</span>
+                                <span class="comp-value">-- <span class="unit">uF</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-card" id="woofer-card">
+                        <h3>Woofer Network</h3>
+                        <div class="component-list" id="woofer-list">
+                            <div class="component-item">
+                                <span class="comp-name">L1</span>
+                                <span class="comp-value">-- <span class="unit">mH</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Simplified schematic area -->
+            <!-- Schematic Area -->
+            <div class="schematic-container">
+                <h3>Network Schematic</h3>
+                <div id="schematic-svg-wrapper">
+                    <svg id="schematic-svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet">
+                        <!-- Dynamic content -->
+                    </svg>
+                </div>
+            </div>
+
+            <div id="schematic-info"
+                style="margin-top: 2rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                Calculations are based on ideal driver impedances.
+            </div>
         </div>
-    </div>
 
-    <script type="module">
-        import { calculateCrossover, calculateLPad, calculateZobel, calculate3Way, validateSafety, getIntentGuidance, CROSSOVER_TYPES, DESIGN_INTENTS } from './calculator.js';
+        <script type="module">
+            import { calculateCrossover, calculateLPad, calculateZobel, calculate3Way, validateSafety, getIntentGuidance, CROSSOVER_TYPES, DESIGN_INTENTS } from './calculator.js';
 
-        const btn = document.getElementById('calc-btn');
-        const rhInput = document.getElementById('tweeter-imp');
-        const fsInput = document.getElementById('tweeter-fs');
-        const rlInput = document.getElementById('woofer-imp');
-        const fInput = document.getElementById('freq');
-        const typeSelect = document.getElementById('type');
-        const intentSelect = document.getElementById('intent');
-        const hpList = document.getElementById('high-pass-list');
-        const lpList = document.getElementById('low-pass-list');
-        const svg = document.getElementById('schematic-svg');
-        const alertsContainer = document.getElementById('alerts-container');
-        const intentTip = document.getElementById('intent-tip');
+            const btn = document.getElementById('calc-btn');
+            const rhInput = document.getElementById('tweeter-imp');
+            const fsInput = document.getElementById('tweeter-fs');
+            const rlInput = document.getElementById('woofer-imp');
+            const fInput = document.getElementById('freq');
+            const typeSelect = document.getElementById('type');
+            const intentSelect = document.getElementById('intent');
+            const tweeterList = document.getElementById('tweeter-list');
+            const midrangeList = document.getElementById('midrange-list');
+            const wooferList = document.getElementById('woofer-list');
+            const tweeterCard = document.getElementById('tweeter-card');
+            const midrangeCard = document.getElementById('midrange-card');
+            const wooferCard = document.getElementById('woofer-card');
 
-        // Tab Logic
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        let activeTab = 'simple';
+            const svg = document.getElementById('schematic-svg');
+            const alertsContainer = document.getElementById('alerts-container');
+            const intentTip = document.getElementById('intent-tip');
 
-        tabBtns.forEach(tabBtn => {
-            tabBtn.addEventListener('click', () => {
-                console.log('Tab clicked:', tabBtn.dataset.tab);
-                tabBtns.forEach(b => b.classList.remove('active'));
-                tabBtn.classList.add('active');
+            // Tab Logic
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const tabViews = document.querySelectorAll('.tab-view');
+            let activeTab = 'home';
 
-                activeTab = tabBtn.dataset.tab;
-                tabContents.forEach(content => {
-                    content.classList.add('hidden');
-                    if (content.id === `${activeTab}-inputs`) content.classList.remove('hidden');
+            tabBtns.forEach(tabBtn => {
+                tabBtn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabBtn.classList.add('active');
+
+                    activeTab = tabBtn.dataset.tab;
+
+                    if (activeTab === 'home') {
+                        document.getElementById('home-view').classList.remove('hidden');
+                        document.getElementById('calculator-view').classList.add('hidden');
+                    } else {
+                        document.getElementById('home-view').classList.add('hidden');
+                        document.getElementById('calculator-view').classList.remove('hidden');
+
+                        // Toggle Midrange Card
+                        if (activeTab === 'complex') {
+                            midrangeCard.classList.remove('hidden');
+                        } else {
+                            midrangeCard.classList.add('hidden');
+                        }
+
+                        tabContents.forEach(content => {
+                            content.classList.add('hidden');
+                            if (content.id === `${activeTab}-inputs`) content.classList.remove('hidden');
+                        });
+                        updateResults();
+                    }
                 });
-
-                updateResults();
             });
-        });
 
-        function drawSchematic(type) {
-            svg.innerHTML = '';
-            const is1stOrder = type === CROSSOVER_TYPES.BUTTERWORTH_1ST;
+            // Spectrum Interaction Logic
+            const bands = document.querySelectorAll('.chart-band');
+            const infoName = document.getElementById('info-name');
+            const infoRange = document.getElementById('info-range');
+            const infoDesc = document.getElementById('info-desc');
 
-            // Shared Styles & Definitions
-            svg.innerHTML = `
+            bands.forEach(band => {
+                band.addEventListener('mouseenter', () => {
+                    infoName.textContent = band.dataset.name;
+                    infoRange.textContent = band.dataset.range;
+                    infoDesc.textContent = band.dataset.desc;
+                });
+            });
+
+            function drawSchematic(type) {
+                svg.innerHTML = '';
+                const is1stOrder = type === CROSSOVER_TYPES.BUTTERWORTH_1ST;
+
+                // Shared Styles & Definitions
+                svg.innerHTML = `
                 <defs>
                     <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                         <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
@@ -232,9 +327,9 @@
                 <text x="55" y="40" fill="#94a3b8" font-size="10">IN</text>
             `;
 
-            if (is1stOrder) {
-                // 1st Order High Pass
-                svg.innerHTML += `
+                if (is1stOrder) {
+                    // 1st Order High Pass
+                    svg.innerHTML += `
                     <!-- HP Path -->
                     <line x1="50" y1="50" x2="150" y2="50" stroke="#d1d5db" stroke-width="2" />
                     <!-- Capacitor C1 -->
@@ -261,9 +356,64 @@
                     <line x1="310" y1="150" x2="360" y2="150" stroke="#d1d5db" stroke-width="2" />
                     <line x1="360" y1="150" x2="360" y2="250" stroke="#d1d5db" stroke-width="2" />
                 `;
-            } else {
-                // 2nd Order
-                svg.innerHTML += `
+                } else if (type === CROSSOVER_TYPES.BUTTERWORTH_3RD) {
+                    // 3rd Order HP: C1 - L2(shunt) - C3
+                    svg.innerHTML += `
+                    <!-- HP Path -->
+                    <line x1="50" y1="50" x2="100" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <!-- C1 -->
+                    <line x1="100" y1="35" x2="100" y2="65" stroke="#10b981" stroke-width="3" />
+                    <line x1="108" y1="35" x2="108" y2="65" stroke="#10b981" stroke-width="3" />
+                    <text x="95" y="30" fill="#10b981" font-size="10">C1</text>
+                    <line x1="108" y1="50" x2="160" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <!-- L2 Shunt -->
+                    <line x1="160" y1="50" x2="160" y2="70" stroke="#d1d5db" stroke-width="2" />
+                    <path d="M 160 70 Q 145 75 160 80 Q 145 85 160 90 Q 145 95 160 100" fill="none" stroke="#f59e0b" stroke-width="3" />
+                    <text x="165" y="90" fill="#f59e0b" font-size="10">L2</text>
+                    <line x1="160" y1="100" x2="160" y2="250" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="160" y1="50" x2="210" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <!-- C3 -->
+                    <line x1="210" y1="35" x2="210" y2="65" stroke="#10b981" stroke-width="3" />
+                    <line x1="218" y1="35" x2="218" y2="65" stroke="#10b981" stroke-width="3" />
+                    <text x="205" y="30" fill="#10b981" font-size="10">C3</text>
+                    <line x1="218" y1="50" x2="280" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <!-- Tweeter -->
+                    <rect x="280" y="30" width="40" height="40" fill="none" stroke="#94a3b8" stroke-width="2" />
+                    <line x1="320" y1="50" x2="350" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="350" y1="50" x2="350" y2="250" stroke="#d1d5db" stroke-width="2" />
+
+                    <!-- LP Path -->
+                    <line x1="50" y1="50" x2="50" y2="180" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="50" y1="180" x2="80" y2="180" stroke="#d1d5db" stroke-width="2" />
+                    <!-- L1 -->
+                    <path d="M 80 180 Q 85 165 90 180 Q 95 165 100 180 Q 105 165 110 180" fill="none" stroke="#f59e0b" stroke-width="3" />
+                    <text x="85" y="160" fill="#f59e0b" font-size="10">L1</text>
+                    <line x1="110" y1="180" x2="140" y2="180" stroke="#d1d5db" stroke-width="2" />
+                    <!-- C2 Shunt -->
+                    <line x1="140" y1="180" x2="140" y2="200" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="130" y1="200" x2="150" y2="200" stroke="#10b981" stroke-width="3" />
+                    <line x1="130" y1="208" x2="150" y2="208" stroke="#10b981" stroke-width="3" />
+                    <text x="155" y="210" fill="#10b981" font-size="10">C2</text>
+                    <line x1="140" y1="208" x2="140" y2="250" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="140" y1="180" x2="170" y2="180" stroke="#d1d5db" stroke-width="2" />
+                    <!-- L3 -->
+                    <path d="M 170 180 Q 175 165 180 180 Q 185 165 190 180 Q 195 165 200 180" fill="none" stroke="#f59e0b" stroke-width="3" />
+                    <text x="175" y="160" fill="#f59e0b" font-size="10">L3</text>
+                    <line x1="200" y1="180" x2="250" y2="180" stroke="#d1d5db" stroke-width="2" />
+                    <!-- Woofer -->
+                    <rect x="250" y="160" width="60" height="40" fill="none" stroke="#94a3b8" stroke-width="2" />
+                    <line x1="310" y1="180" x2="380" y2="180" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="380" y1="180" x2="380" y2="250" stroke="#d1d5db" stroke-width="2" />
+                `;
+                } else if (type === CROSSOVER_TYPES.LINKWITZ_RILEY_4TH) {
+                    // Simplified "Complex" visual for 4th order
+                    svg.innerHTML += `
+                    <text x="300" y="150" fill="#94a3b8" font-size="14" text-anchor="middle">Multiple cascade sections (4th Order Architecture)</text>
+                    <text x="300" y="175" fill="#text-muted" font-size="11" text-anchor="middle">Refer to component list for all series/shunt values</text>
+                   `;
+                } else {
+                    // 2nd Order
+                    svg.innerHTML += `
                     <!-- High Pass Path -->
                     <line x1="50" y1="50" x2="150" y2="50" stroke="#d1d5db" stroke-width="2" />
                     <line x1="150" y1="35" x2="150" y2="65" stroke="#10b981" stroke-width="3" />
@@ -299,103 +449,116 @@
                     <line x1="310" y1="180" x2="380" y2="180" stroke="#d1d5db" stroke-width="2" />
                     <line x1="380" y1="180" x2="380" y2="250" stroke="#d1d5db" stroke-width="2" />
                 `;
-            }
-        }
-
-        function updateResults() {
-            alertsContainer.innerHTML = '';
-            const intent = intentSelect.value;
-            intentTip.textContent = getIntentGuidance(intent);
-            intentTip.classList.remove('hidden');
-
-            if (activeTab === 'simple') {
-                const rh = parseFloat(rhInput.value);
-                const rl = parseFloat(rlInput.value);
-                const f = parseFloat(fInput.value);
-                const fs = parseFloat(fsInput.value);
-                const type = typeSelect.value;
-
-                const results = calculateCrossover(rh, rl, f, type);
-                renderResults(results.highPass, results.lowPass);
-
-                // Add Coverage Labels
-                document.querySelector('#high-pass-card h3').innerHTML += ` <span class="coverage-label">${f}Hz+</span>`;
-                document.querySelector('#low-pass-card h3').innerHTML += ` <span class="coverage-label">0-${f}Hz</span>`;
-
-                drawSchematic(type);
-
-                // Run Safety Validation
-                const warnings = validateSafety(rh, rl, f, fs, type);
-                warnings.forEach(w => {
-                    const alertDiv = document.createElement('div');
-                    alertDiv.className = `alert ${w.type}`;
-                    alertDiv.textContent = w.message;
-                    alertsContainer.appendChild(alertDiv);
-                });
-            }
-            else if (activeTab === 'advanced') {
-                const resultHP = [];
-                const resultLP = [];
-
-                // L-Pad
-                const lpadImp = parseFloat(document.getElementById('lpad-imp').value);
-                const lpadDb = parseFloat(document.getElementById('lpad-db').value);
-                if (lpadImp && lpadDb) {
-                    const lpad = calculateLPad(lpadImp, lpadDb);
-                    resultHP.push({ name: 'R1 (Series)', value: lpad.r1, unit: 'Ω' });
-                    resultHP.push({ name: 'R2 (Para)', value: lpad.r2, unit: 'Ω' });
                 }
+            }
 
-                // Zobel
-                const zobelRe = parseFloat(document.getElementById('zobel-re').value);
-                const zobelLe = parseFloat(document.getElementById('zobel-le').value);
-                if (zobelRe && zobelLe) {
-                    const zobel = calculateZobel(zobelRe, zobelLe);
-                    resultLP.push({ name: 'Rz (Zobel)', value: zobel.rz, unit: 'Ω' });
-                    resultLP.push({ name: 'Cz (Zobel)', value: zobel.cz, unit: 'uF' });
+            function updateResults() {
+                alertsContainer.innerHTML = '';
+                const intent = intentSelect.value;
+                intentTip.textContent = getIntentGuidance(intent);
+                intentTip.classList.remove('hidden');
+
+                if (activeTab === 'simple') {
+                    const rh = parseFloat(rhInput.value);
+                    const rl = parseFloat(rlInput.value);
+                    const f = parseFloat(fInput.value);
+                    const fs = parseFloat(fsInput.value);
+                    const type = typeSelect.value;
+
+                    const results = calculateCrossover(rh, rl, f, type);
+                    renderResults(results.highPass, results.lowPass);
+
+                    // Add Coverage Labels
+                    tweeterCard.querySelector('h3').innerHTML += ` <span class="coverage-label">${f}Hz+</span>`;
+                    wooferCard.querySelector('h3').innerHTML += ` <span class="coverage-label">0-${f}Hz</span>`;
+
+                    drawSchematic(type);
+
+                    // Run Safety Validation
+                    const warnings = validateSafety(rh, rl, f, fs, type);
+                    warnings.forEach(w => {
+                        const alertDiv = document.createElement('div');
+                        alertDiv.className = `alert ${w.type}`;
+                        alertDiv.textContent = w.message;
+                        alertsContainer.appendChild(alertDiv);
+                    });
                 }
-                renderResults(resultHP, resultLP);
+                else if (activeTab === 'advanced') {
+                    const resultHP = [];
+                    const resultLP = [];
+
+                    // Base Crossover
+                    const rh = parseFloat(rhInput.value) || 8;
+                    const rl = parseFloat(rlInput.value) || 8;
+                    const f = parseFloat(fInput.value) || 3000;
+                    const type = typeSelect.value;
+                    const baseCross = calculateCrossover(rh, rl, f, type);
+                    resultHP.push(...baseCross.highPass);
+                    resultLP.push(...baseCross.lowPass);
+
+                    // L-Pad
+                    const lpadImp = parseFloat(document.getElementById('lpad-imp').value);
+                    const lpadDb = parseFloat(document.getElementById('lpad-db').value);
+                    if (lpadImp && lpadDb) {
+                        const lpad = calculateLPad(lpadImp, lpadDb);
+                        resultHP.push({ name: 'R1 (L-Pad)', value: lpad.r1, unit: 'Ω' });
+                        resultHP.push({ name: 'R2 (L-Pad)', value: lpad.r2, unit: 'Ω' });
+                    }
+
+                    // Zobel
+                    const zobelRe = parseFloat(document.getElementById('zobel-re').value);
+                    const zobelLe = parseFloat(document.getElementById('zobel-le').value);
+                    if (zobelRe && zobelLe) {
+                        const zobel = calculateZobel(zobelRe, zobelLe);
+                        resultLP.push({ name: 'Rz (Zobel)', value: zobel.rz, unit: 'Ω' });
+                        resultLP.push({ name: 'Cz (Zobel)', value: zobel.cz, unit: 'uF' });
+                    }
+                    renderResults(resultHP, resultLP);
+                    drawSchematic(type);
+                }
+                else if (activeTab === 'complex') {
+                    const rt = parseFloat(document.getElementById('w3-rt').value) || 8;
+                    const rm = parseFloat(document.getElementById('w3-rm').value) || 8;
+                    const rw = parseFloat(document.getElementById('w3-rw').value) || 8;
+                    const flz = parseFloat(document.getElementById('w3-flz').value) || 500;
+                    const fhz = parseFloat(document.getElementById('w3-fhz').value) || 3500;
+                    const type = typeSelect.value;
+
+                    const results = calculate3Way(rw, rm, rt, flz, fhz, type);
+
+                    tweeterList.innerHTML = results.tweeter.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('');
+                    midrangeList.innerHTML = results.midrange.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('');
+                    wooferList.innerHTML = results.woofer.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('');
+
+                    tweeterCard.querySelector('h3').innerHTML = `Tweeter Network <span class="coverage-label">${fhz}Hz+</span>`;
+                    midrangeCard.querySelector('h3').innerHTML = `Midrange Network <span class="coverage-label">${flz}-${fhz}Hz</span>`;
+                    wooferCard.querySelector('h3').innerHTML = `Woofer Network <span class="coverage-label">0-${flz}Hz</span>`;
+                }
             }
-            else if (activeTab === 'complex') {
-                const rt = parseFloat(document.getElementById('w3-rt').value) || 8;
-                const rm = parseFloat(document.getElementById('w3-rm').value) || 8;
-                const rw = parseFloat(document.getElementById('w3-rw').value) || 8;
-                const flz = parseFloat(document.getElementById('w3-flz').value) || 500;
-                const fhz = parseFloat(document.getElementById('w3-fhz').value) || 3500;
 
-                const results = calculate3Way(rw, rm, rt, flz, fhz);
+            function renderResults(hp, lp) {
+                tweeterCard.querySelector('h3').innerHTML = `Tweeter Network`;
+                wooferCard.querySelector('h3').innerHTML = `Woofer Network`;
 
-                hpList.innerHTML = `<h3>Tweeter <span class="coverage-label">${fhz}Hz+</span></h3>` + results.tweeter.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('');
-                lpList.innerHTML = `<h3>Woofer <span class="coverage-label">0-${flz}Hz</span></h3>` + results.woofer.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('') +
-                    `<h3>Midrange <span class="coverage-label">${flz}-${fhz}Hz</span></h3>` + results.midrange.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('');
-            }
-        }
-
-        function renderResults(hp, lp) {
-            document.querySelector('#high-pass-card h3').innerHTML = `High Pass (Tweeter)`;
-            document.querySelector('#low-pass-card h3').innerHTML = `Low Pass (Woofer)`;
-
-            hpList.innerHTML = hp.map(comp => `
+                tweeterList.innerHTML = hp.map(comp => `
                 <div class="component-item">
                     <span class="comp-name">${comp.name}</span>
                     <span class="comp-value">${comp.value} <span class="unit">${comp.unit}</span></span>
                 </div>
             `).join('');
 
-            lpList.innerHTML = lp.map(comp => `
+                wooferList.innerHTML = lp.map(comp => `
                 <div class="component-item">
                     <span class="comp-name">${comp.name}</span>
                     <span class="comp-value">${comp.value} <span class="unit">${comp.unit}</span></span>
                 </div>
             `).join('');
-        }
+            }
 
-        btn.addEventListener('click', updateResults);
-        updateResults();
-    </script>
-</body>
-
-</html>
+            btn.addEventListener('click', updateResults);
+            updateResults();
+        </script>
+    </div>
 </body>
 
 </html>

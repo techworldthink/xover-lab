@@ -29,14 +29,13 @@ body {
 
 .container {
     width: 100%;
-    max-width: 900px;
+    max-width: 1100px;
     background: var(--card-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     border-radius: 24px;
-    padding: 4rem;
-    /* Increased padding */
+    padding: 3rem;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
@@ -100,14 +99,17 @@ header p {
 
 .main-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    /* Increased gap */
+    grid-template-columns: 1fr 380px;
+    gap: 3rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
     .main-grid {
         grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 2rem;
     }
 }
 
@@ -258,6 +260,7 @@ button:active {
     font-family: 'JetBrains Mono', monospace;
     font-size: 1.1rem;
     color: white;
+    white-space: nowrap;
 }
 
 .unit {
@@ -291,4 +294,158 @@ button:active {
     width: 100%;
     max-width: 600px;
     height: auto;
+}
+
+/* Home / Spectrum Styles */
+.tab-view {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.spectrum-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.spectrum-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+.spectrum-card p {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.frequency-chart {
+    height: 60px;
+    display: flex;
+    gap: 4px;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.chart-band {
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.chart-band:hover {
+    flex: 1.5;
+    filter: brightness(1.2);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.sub-bass {
+    background: #ef4444;
+}
+
+.bass {
+    background: #f59e0b;
+}
+
+.low-mid {
+    background: #fbbf24;
+}
+
+.midrange {
+    background: #10b981;
+}
+
+.presence {
+    background: #3b82f6;
+}
+
+.brilliance {
+    background: #6366f1;
+}
+
+.treble {
+    background: #8b5cf6;
+}
+
+.spectrum-info {
+    min-height: 120px;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    text-align: left;
+}
+
+.spectrum-info h3 {
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+}
+
+.spectrum-info p#info-range {
+    color: var(--accent);
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.spectrum-info p#info-desc {
+    font-style: italic;
+    margin-bottom: 0;
+    color: var(--text-muted);
+}
+
+.home-guide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.guide-card {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    transition: transform 0.2s;
+    text-align: left;
+}
+
+.guide-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+}
+
+.guide-card h4 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.guide-card p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .home-guide {
+        grid-template-columns: 1fr;
+    }
 }
