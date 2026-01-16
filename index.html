@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Over Lab | Speaker Crossover Designer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>X-Over Lab</h1>
+            <p>Precision 2-Way Speaker Crossover Designer</p>
+        </header>
+
+        <div class="main-grid">
+            <section class="input-section">
+                <div class="form-group">
+                    <label for="tweeter-imp">Tweeter Impedance (Ω)</label>
+                    <input type="number" id="tweeter-imp" value="8" step="0.1" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="woofer-imp">Woofer Impedance (Ω)</label>
+                    <input type="number" id="woofer-imp" value="8" step="0.1" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="freq">Crossover Frequency (Hz)</label>
+                    <input type="number" id="freq" value="3000" step="10" min="20">
+                    <span class="input-hint">The "hand-off" point between woofer and tweeter. Common range: 2000 - 3500
+                        Hz.</span>
+                </div>
+                <div class="form-group">
+                    <label for="type">Crossover Type</label>
+                    <select id="type">
+                        <option value="1st Order Butterworth">1st Order Butterworth (6dB)</option>
+                        <option value="2nd Order Butterworth">2nd Order Butterworth (12dB)</option>
+                        <option value="2nd Order Linkwitz-Riley">2nd Order Linkwitz-Riley (12dB)</option>
+                        <option value="2nd Order Bessel">2nd Order Bessel (12dB)</option>
+                    </select>
+                </div>
+                <button id="calc-btn">Calculate Components</button>
+            </section>
+
+            <section class="results-section">
+                <div class="result-card" id="high-pass-card">
+                    <h3>High Pass Network (Tweeter)</h3>
+                    <div class="component-list" id="high-pass-list">
+                        <!-- Calculated items will go here -->
+                        <div class="component-item">
+                            <span class="comp-name">C1</span>
+                            <span class="comp-value">-- <span class="unit">uF</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card" id="low-pass-card">
+                    <h3>Low Pass Network (Woofer)</h3>
+                    <div class="component-list" id="low-pass-list">
+                        <!-- Calculated items will go here -->
+                        <div class="component-item">
+                            <span class="comp-name">L1</span>
+                            <span class="comp-value">-- <span class="unit">mH</span></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Simplified schematic area -->
+        <!-- Schematic Area -->
+        <div class="schematic-container">
+            <h3>Network Schematic</h3>
+            <div id="schematic-svg-wrapper">
+                <svg id="schematic-svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet">
+                    <!-- Dynamic content -->
+                </svg>
+            </div>
+        </div>
+
+        <div id="schematic-info"
+            style="margin-top: 2rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+            Calculations are based on ideal driver impedances.
+        </div>
+    </div>
+
+    <script type="module">
+        import { calculateCrossover, CROSSOVER_TYPES } from './calculator.js';
+
+        const btn = document.getElementById('calc-btn');
+        const rhInput = document.getElementById('tweeter-imp');
+        const rlInput = document.getElementById('woofer-imp');
+        const fInput = document.getElementById('freq');
+        const typeSelect = document.getElementById('type');
+        const hpList = document.getElementById('high-pass-list');
+        const lpList = document.getElementById('low-pass-list');
+        const svg = document.getElementById('schematic-svg');
+
+        function drawSchematic(type) {
+            svg.innerHTML = '';
+            const is1stOrder = type === CROSSOVER_TYPES.BUTTERWORTH_1ST;
+
+            // Shared Styles & Definitions
+            svg.innerHTML = `
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
+                    </marker>
+                </defs>
+                <!-- Ground Rail -->
+                <line x1="50" y1="250" x2="550" y2="250" stroke="#94a3b8" stroke-width="2" />
+                <!-- Input -->
+                <circle cx="50" cy="50" r="4" fill="#818cf8" />
+                <circle cx="50" cy="250" r="4" fill="#818cf8" />
+                <text x="30" y="55" fill="#818cf8" font-size="12" font-weight="bold">+</text>
+                <text x="30" y="255" fill="#818cf8" font-size="12" font-weight="bold">-</text>
+                <text x="55" y="40" fill="#94a3b8" font-size="10">IN</text>
+            `;
+
+            if (is1stOrder) {
+                // 1st Order High Pass
+                svg.innerHTML += `
+                    <!-- HP Path -->
+                    <line x1="50" y1="50" x2="150" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <!-- Capacitor C1 -->
+                    <line x1="150" y1="35" x2="150" y2="65" stroke="#10b981" stroke-width="3" />
+                    <line x1="160" y1="35" x2="160" y2="65" stroke="#10b981" stroke-width="3" />
+                    <text x="145" y="30" fill="#10b981" font-size="12" font-weight="bold">C1</text>
+                    <line x1="160" y1="50" x2="250" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <!-- Tweeter -->
+                    <rect x="250" y="30" width="40" height="40" fill="none" stroke="#94a3b8" stroke-width="2" />
+                    <text x="255" y="55" fill="#94a3b8" font-size="10">TW</text>
+                    <line x1="290" y1="50" x2="320" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="320" y1="50" x2="320" y2="250" stroke="#d1d5db" stroke-width="2" />
+
+                    <!-- LP Path -->
+                    <line x1="50" y1="50" x2="50" y2="150" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="50" y1="150" x2="150" y2="150" stroke="#d1d5db" stroke-width="2" />
+                    <!-- Inductor L1 -->
+                    <path d="M 150 150 Q 155 130 160 150 Q 165 130 170 150 Q 175 130 180 150" fill="none" stroke="#f59e0b" stroke-width="3" />
+                    <text x="155" y="130" fill="#f59e0b" font-size="12" font-weight="bold">L1</text>
+                    <line x1="180" y1="150" x2="250" y2="150" stroke="#d1d5db" stroke-width="2" />
+                    <!-- Woofer -->
+                    <rect x="250" y="130" width="60" height="40" fill="none" stroke="#94a3b8" stroke-width="2" />
+                    <text x="258" y="155" fill="#94a3b8" font-size="10">WOOF</text>
+                    <line x1="310" y1="150" x2="360" y2="150" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="360" y1="150" x2="360" y2="250" stroke="#d1d5db" stroke-width="2" />
+                `;
+            } else {
+                // 2nd Order (Simplified representation for both HP/LP)
+                svg.innerHTML += `
+                    <!-- High Pass Path -->
+                    <line x1="50" y1="50" x2="150" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="150" y1="35" x2="150" y2="65" stroke="#10b981" stroke-width="3" />
+                    <line x1="160" y1="35" x2="160" y2="65" stroke="#10b981" stroke-width="3" />
+                    <text x="145" y="30" fill="#10b981" font-size="12" font-weight="bold">C1</text>
+                    <line x1="160" y1="50" x2="220" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <!-- Shunt Inductor L1 -->
+                    <line x1="220" y1="50" x2="220" y2="70" stroke="#d1d5db" stroke-width="2" />
+                    <path d="M 220 70 Q 200 75 220 80 Q 200 85 220 90 Q 200 95 220 100" fill="none" stroke="#f59e0b" stroke-width="3" />
+                    <text x="230" y="90" fill="#f59e0b" font-size="12" font-weight="bold">L1</text>
+                    <line x1="220" y1="100" x2="220" y2="250" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="220" y1="50" x2="280" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <!-- Tweeter -->
+                    <rect x="280" y="30" width="40" height="40" fill="none" stroke="#94a3b8" stroke-width="2" />
+                    <line x1="320" y1="50" x2="350" y2="50" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="350" y1="50" x2="350" y2="250" stroke="#d1d5db" stroke-width="2" />
+
+                    <!-- Low Pass Path -->
+                    <line x1="50" y1="50" x2="50" y2="180" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="50" y1="180" x2="100" y2="180" stroke="#d1d5db" stroke-width="2" />
+                    <path d="M 100 180 Q 105 160 110 180 Q 115 160 120 180 Q 125 160 130 180" fill="none" stroke="#f59e0b" stroke-width="3" />
+                    <text x="105" y="160" fill="#f59e0b" font-size="12" font-weight="bold">L2</text>
+                    <line x1="130" y1="180" x2="180" y2="180" stroke="#d1d5db" stroke-width="2" />
+                    <!-- Shunt Cap C2 -->
+                    <line x1="180" y1="180" x2="180" y2="200" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="165" y1="200" x2="195" y2="200" stroke="#10b981" stroke-width="3" />
+                    <line x1="165" y1="210" x2="195" y2="210" stroke="#10b981" stroke-width="3" />
+                    <text x="200" y="210" fill="#10b981" font-size="12" font-weight="bold">C2</text>
+                    <line x1="180" y1="210" x2="180" y2="250" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="180" y1="180" x2="250" y2="180" stroke="#d1d5db" stroke-width="2" />
+                    <!-- Woofer -->
+                    <rect x="250" y="160" width="60" height="40" fill="none" stroke="#94a3b8" stroke-width="2" />
+                    <line x1="310" y1="180" x2="380" y2="180" stroke="#d1d5db" stroke-width="2" />
+                    <line x1="380" y1="180" x2="380" y2="250" stroke="#d1d5db" stroke-width="2" />
+                `;
+            }
+        }
+
+        function updateResults() {
+            const rh = parseFloat(rhInput.value);
+            const rl = parseFloat(rlInput.value);
+            const f = parseFloat(fInput.value);
+            const type = typeSelect.value;
+
+            const results = calculateCrossover(rh, rl, f, type);
+
+            hpList.innerHTML = results.highPass.map(comp => `
+                <div class="component-item">
+                    <span class="comp-name">${comp.name}</span>
+                    <span class="comp-value">${comp.value} <span class="unit">${comp.unit}</span></span>
+                </div>
+            `).join('');
+
+            lpList.innerHTML = results.lowPass.map(comp => `
+                <div class="component-item">
+                    <span class="comp-name">${comp.name}</span>
+                    <span class="comp-value">${comp.value} <span class="unit">${comp.unit}</span></span>
+                </div>
+            `).join('');
+
+            drawSchematic(type);
+        }
+
+        btn.addEventListener('click', updateResults);
+
+        // Initial calculation
+        updateResults();
+    </script>
+</body>
+
+</html>
