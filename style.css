@@ -212,6 +212,17 @@ button:active {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-wrap: wrap;
+    /* Added for coverage label */
+}
+
+.coverage-label {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--accent);
+    border-radius: 6px;
+    font-weight: 400;
 }
 
 .component-list {

@@ -47,20 +47,21 @@
                     <div class="form-group">
                         <label for="tweeter-imp">Tweeter Impedance (Ω)</label>
                         <input type="number" id="tweeter-imp" value="8" step="0.1" min="1">
-                        <span class="input-hint">Nominal resistance of the tweeter (check driver specs, usually 4 or
-                            8Ω).</span>
+                        <span class="input-hint">Nominal resistance (usually 4 or 8Ω). Typical: 8Ω for home
+                            speakers.</span>
                     </div>
                     <div class="form-group">
                         <label for="tweeter-fs">Tweeter Fs (Hz) - <span
                                 style="font-size: 0.7rem; color: var(--text-muted);">Optional for safety</span></label>
                         <input type="number" id="tweeter-fs" placeholder="e.g. 1000" step="1">
-                        <span class="input-hint">Found in the tweeter's datasheet as 'Fs'. Used to calculate safety
+                        <span class="input-hint">Found in datasheet as 'Fs'. Typical: 1000Hz. Used for safety
                             margins.</span>
                     </div>
                     <div class="form-group">
                         <label for="woofer-imp">Woofer Impedance (Ω)</label>
                         <input type="number" id="woofer-imp" value="8" step="0.1" min="1">
-                        <span class="input-hint">Nominal resistance of the woofer (usually 4 or 8Ω).</span>
+                        <span class="input-hint">Nominal resistance (usually 4 or 8Ω). Typical: 8Ω for home
+                            speakers.</span>
                     </div>
                     <div class="form-group">
                         <label for="freq">Crossover Frequency (Hz)</label>
@@ -90,8 +91,7 @@
                             <input type="number" id="lpad-imp" placeholder="Imp (8)" step="0.1">
                             <input type="number" id="lpad-db" placeholder="dB (3)" step="0.1">
                         </div>
-                        <span class="input-hint">Matches tweeter volume to woofer. Enter tweeter impedance and desired
-                            dB reduction.</span>
+                        <span class="input-hint">Matches tweeter volume to woofer. Typical reduction: 3 to 6 dB.</span>
                     </div>
                     <div class="form-group">
                         <label>Zobel (Woofer Comp.)</label>
@@ -99,8 +99,8 @@
                             <input type="number" id="zobel-re" placeholder="Re (ohms)" step="0.1">
                             <input type="number" id="zobel-le" placeholder="Le (mH)" step="0.01">
                         </div>
-                        <span class="input-hint">Find <b>Re</b> and <b>Le</b> in the woofer's datasheet (T/S
-                            parameters), or measure <b>Re</b> with a multimeter.</span>
+                        <span class="input-hint">Corrects rising impedance. Typical for 8Ω woofer: Re 6.5, Le
+                            0.8.</span>
                     </div>
                 </div>
 
@@ -114,8 +114,7 @@
                             <input type="number" id="w3-rm" placeholder="MID" step="0.1">
                             <input type="number" id="w3-rw" placeholder="WF" step="0.1">
                         </div>
-                        <span class="input-hint">Nominal impedance for Tweeter (TW), Midrange (MID), and Woofer
-                            (WF).</span>
+                        <span class="input-hint">Speaker impedances (usually 8Ω).</span>
                     </div>
                     <div class="form-group">
                         <label>Freqs (Hz)</label>
@@ -123,8 +122,7 @@
                             <input type="number" id="w3-flz" placeholder="Low (500)">
                             <input type="number" id="w3-fhz" placeholder="High (3500)">
                         </div>
-                        <span class="input-hint">Low: Woofer to Midrange crossover. High: Midrange to Tweeter
-                            crossover.</span>
+                        <span class="input-hint">Typical Hand-offs: 500Hz (Low) and 3500Hz (High).</span>
                     </div>
                 </div>
 
@@ -319,6 +317,11 @@
 
                 const results = calculateCrossover(rh, rl, f, type);
                 renderResults(results.highPass, results.lowPass);
+
+                // Add Coverage Labels
+                document.querySelector('#high-pass-card h3').innerHTML += ` <span class="coverage-label">${f}Hz+</span>`;
+                document.querySelector('#low-pass-card h3').innerHTML += ` <span class="coverage-label">0-${f}Hz</span>`;
+
                 drawSchematic(type);
 
                 // Run Safety Validation
@@ -362,13 +365,16 @@
 
                 const results = calculate3Way(rw, rm, rt, flz, fhz);
 
-                hpList.innerHTML = `<h3>Tweeter</h3>` + results.tweeter.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('');
-                lpList.innerHTML = `<h3>Woofer</h3>` + results.woofer.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('') +
-                    `<h3>Midrange</h3>` + results.midrange.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('');
+                hpList.innerHTML = `<h3>Tweeter <span class="coverage-label">${fhz}Hz+</span></h3>` + results.tweeter.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('');
+                lpList.innerHTML = `<h3>Woofer <span class="coverage-label">0-${flz}Hz</span></h3>` + results.woofer.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('') +
+                    `<h3>Midrange <span class="coverage-label">${flz}-${fhz}Hz</span></h3>` + results.midrange.map(comp => `<div class="component-item"><span class="comp-name">${comp.name}</span><span class="comp-value">${comp.value} ${comp.unit}</span></div>`).join('');
             }
         }
 
         function renderResults(hp, lp) {
+            document.querySelector('#high-pass-card h3').innerHTML = `High Pass (Tweeter)`;
+            document.querySelector('#low-pass-card h3').innerHTML = `Low Pass (Woofer)`;
+
             hpList.innerHTML = hp.map(comp => `
                 <div class="component-item">
                     <span class="comp-name">${comp.name}</span>
