@@ -159,19 +159,38 @@ export function calculateZobel(re, le) {
  * Calculates a 3-Way Crossover.
  */
 export function calculate3Way(rw, rm, rt, flz, fhz, type) {
-    // We use the selected type for both crossover points
-    const woofer = calculateCrossover(rw, rw, flz, type).lowPass;
-    const tweeter = calculateCrossover(rt, rt, fhz, type).highPass;
-
-    // Midrange is a Bandpass (HP at flz, LP at fhz)
-    const midHP = calculateCrossover(rm, rm, flz, type).highPass;
-    const midLP = calculateCrossover(rm, rm, fhz, type).lowPass;
-
-    return {
-        woofer,
-        midrange: [...midHP, ...midLP],
-        tweeter
+    const results = {
+        woofer: [],
+        midrange: [],
+        tweeter: []
     };
+
+    // Woofer (Low Pass at flz) - Skip if rw is 0
+    if (rw > 0) {
+        results.woofer = calculateCrossover(rw, rw, flz, type).lowPass.map(c => ({
+            ...c, name: 'W-' + c.name
+        }));
+    }
+
+    // Midrange (Bandpass: HP at flz, LP at fhz) - Skip if rm is 0
+    if (rm > 0) {
+        const midHP = calculateCrossover(rm, rm, flz, type).highPass.map(c => ({
+            ...c, name: 'M-' + c.name
+        }));
+        const midLP = calculateCrossover(rm, rm, fhz, type).lowPass.map(c => ({
+            ...c, name: 'M-' + c.name
+        }));
+        results.midrange = [...midHP, ...midLP];
+    }
+
+    // Tweeter (High Pass at fhz) - Skip if rt is 0
+    if (rt > 0) {
+        results.tweeter = calculateCrossover(rt, rt, fhz, type).highPass.map(c => ({
+            ...c, name: 'T-' + c.name
+        }));
+    }
+
+    return results;
 }
 
 /**
